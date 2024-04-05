@@ -23,20 +23,25 @@
     var data = fetch("http://localhost:4000/data")
       .then(res => res.json())
       .then(data => {
+        var i = 0;
         for (let x in data) {
-            for (let y in data[x]){
+          var j = 0;
+          for (let y in data[x]){
               
-                var template = document.createElement("a");
-                template.innerHTML = data[x][y].name + "<br />";
-                template.href = data[x][y].path;
-                document.body.appendChild(template)
-              
-            }
-            
+            var template = document.createElement("a");
+            template.innerHTML = data[x][y].name + "<br />";
+            template.href = "templates/" + Object.keys(data)[i] + "/" + Object.keys(data[x])[j];
+            document.body.appendChild(template)
+            console.log(Object.keys(data[x])[j])
+            console.log(template.href)
+            j++;  
+          }
+          i++;
         }
+        
       })
     
-    
+      
     
    
   </script>

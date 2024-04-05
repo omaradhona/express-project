@@ -17,7 +17,8 @@ var arr = [];
 var originalPath;
 var modifiedPath;
 var fileName;
-//console.log(path.extname(path.join(folderPath, fs.readdirSync(folderPath)[0], arr[0])))
+
+
 
 function populateJson(){
     fs.readdirSync(folderPath).map(folder => {
@@ -30,14 +31,13 @@ function populateJson(){
                 modifiedPath = "file:///" + originalPath.replaceAll("\\", "/")
                 fileName = path.basename(htmlFile, ".html");
 
-                run(modifiedPath, folder, htmlFile, fileName)            
+                //run(modifiedPath, folder, htmlFile, fileName)            
             });
     })
 }
 
-//populateJson();
+populateJson();
 
-//console.log(originalPath)
 //modifiedPath = "file:///" + originalPath.replaceAll("\\", "/")
 //console.log(modifiedPath)
 //run(modifiedPath)
@@ -50,13 +50,24 @@ function populateJson(){
 
 
 
-const staticPath = path.join(__dirname, "/public");
+//const staticPath = path.join(__dirname, "/public");
 
-app.use(express.static(staticPath));
+//app.use(express.static(staticPath));
 
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+})
 
 app.get("/data", (req, res) => {
-    res.send(data);
+    res.sendFile(path.join(__dirname, "data.json"));
+})
+
+app.get("/templates/hero-sections/hero-section-digital.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "templates", "hero-sections", "hero-section-digital.html"));
+})
+
+app.get("/templates/:folder/:file", (req, res) => {
+    res.sendFile(path.join(__dirname, "templates", req.params.folder, req.params.file));
 })
 
 app.listen(4000, () => {
