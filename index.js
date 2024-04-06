@@ -18,8 +18,6 @@ var originalPath;
 var modifiedPath;
 var fileName;
 
-
-
 function populateJson(){
     fs.readdirSync(folderPath).map(folder => {
         data[folder] = {}
@@ -30,25 +28,15 @@ function populateJson(){
                 originalPath = path.resolve(folderPath, folder, htmlFile);
                 modifiedPath = "file:///" + originalPath.replaceAll("\\", "/")
                 fileName = path.basename(htmlFile, ".html");
+                templateImage = "templates/" + folder + "/" + fileName + ".jpg";
 
-                //run(modifiedPath, folder, htmlFile, fileName)            
+                // "templates/" + category + template + "jpg"
+                run(modifiedPath, folder, htmlFile, fileName, templateImage)            
             });
     })
 }
 
 populateJson();
-
-//modifiedPath = "file:///" + originalPath.replaceAll("\\", "/")
-//console.log(modifiedPath)
-//run(modifiedPath)
-//console.log(arr)
-//require('child_process').exec("start http://localhost:4000/");
-
-
-
-
-
-
 
 //const staticPath = path.join(__dirname, "/public");
 
@@ -74,23 +62,21 @@ app.listen(4000, () => {
     console.log(`Example app listening on port 4000`)
 })
 
+
 //require('child_process').exec("start http://localhost:4000/");
-//window.localStorage.setItem("data", JSON.stringify(data));
-//const fs = require('fs');
-
-//let object = JSON.parse(fs.readFileSync('data.json'));
-//console.log(object.html);
-
-//console.log(data.html);
 
 
-async function run(url, category, template, fileName){
+
+async function run(url, category, template, fileName, templateImage){
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
     
     const html = await page.$eval('body', el => el.innerHTML);
     const css = await page.$eval('style', el => el.innerHTML);
+    const ele = await page.$("body");
+    await page.setViewport({ width: 1280, height: 720 });
+    await ele.screenshot({ path: templateImage })
 
     await browser.close();
 
@@ -98,10 +84,28 @@ async function run(url, category, template, fileName){
         html: html,
         css: css,
         path: url,
-        name: fileName
+        name: fileName,
+        image: templateImage
     }
 
     fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
 }
 
 //run(modifiedPath, "wilunch");
+
+async function scr(){
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto("file:///D:/Projects/templates-factory/templates/navbars/navbar-wilunch.html");
+
+    const html = await page.$eval('body', el => el.innerHTML);
+    const css = await page.$eval('style', el => el.innerHTML);
+    const ele = await page.$("body");
+    //await page.setViewport({ width: 1280, height: 60 });
+    await ele.screenshot({ path: "image.jpeg" })
+
+    await browser.close();
+}
+
+
+//scr();

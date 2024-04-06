@@ -31,7 +31,19 @@
             var template = document.createElement("a");
             template.innerHTML = data[x][y].name + "<br />";
             template.href = "templates/" + Object.keys(data)[i] + "/" + Object.keys(data[x])[j];
+
+            var templateImage = document.createElement("img");
+            /*
+            templateImage.src = "templates/" + Object.keys(data)[i] + "/" + 
+            data[Object.keys(data)[i]][Object.keys(data[x])[j]].name + "jpg";
+            */
+            templateImage.src = data[x][y].image;
+            templateImage.style.width = "100px";
+            templateImage.style.height = "100px";
+
             document.body.appendChild(template)
+            document.body.appendChild(templateImage)
+
             console.log(Object.keys(data[x])[j])
             console.log(template.href)
             j++;  
