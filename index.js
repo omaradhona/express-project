@@ -36,7 +36,7 @@ function populateJson(){
     })
 }
 
-populateJson();
+//populateJson();
 
 //const staticPath = path.join(__dirname, "/public");
 
