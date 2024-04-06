@@ -75,7 +75,14 @@ async function run(url, category, template, fileName, templateImage){
     const html = await page.$eval('body', el => el.innerHTML);
     const css = await page.$eval('style', el => el.innerHTML);
     const ele = await page.$("body");
-    await page.setViewport({ width: 1280, height: 720 });
+
+    if(category == "navbars"){
+        await page.setViewport({ width: 580, height: 300 })
+    }
+    else{
+        await page.setViewport({ width: 1280, height: 720 });
+    }
+    
     await ele.screenshot({ path: templateImage })
 
     await browser.close();
@@ -101,7 +108,16 @@ async function scr(){
     const html = await page.$eval('body', el => el.innerHTML);
     const css = await page.$eval('style', el => el.innerHTML);
     const ele = await page.$("body");
-    //await page.setViewport({ width: 1280, height: 60 });
+    const width = await page.$eval("nav", el => getComputedStyle(el).getPropertyValue("width"))
+    const height = await page.$eval("nav", el => getComputedStyle(el).getPropertyValue("height"))
+    
+    /*
+    await page.setViewport({ 
+        width: parseInt(width.slice(0, width.length - 2)),
+        height: parseInt(height.slice(0, height.length - 2))
+    });
+    */
+    await page.setViewport({ width: 580, height: 300 })
     await ele.screenshot({ path: "image.jpeg" })
 
     await browser.close();

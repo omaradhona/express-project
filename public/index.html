@@ -9,16 +9,45 @@
 </head>
 
 <style>
+  #categories{
+    
+  }
 
+  .template-category{
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .template-category:hover{
+    background-color: rgba(124, 117, 117, 0.856);
+    cursor: pointer;
+  }
+
+  .template a{
+    text-decoration: none;
+  }
+
+  .template img{
+    border: 1px solid black;
+  }
+
+  
 </style>
 
 <body>
-  <div id="root">
-    test
+  <div id="categories" class="bg-dark text-white d-flex justify-content-center gap-3 p-3">
+
+  </div>
+
+  <div id="root" class="d-flex gap-3 text-center mt-2">
     
   </div>
 
   <script>
+    var categories = document.getElementById("categories")
+    var container = document.getElementById("root");
+
+    
     
     var data = fetch("http://localhost:4000/data")
       .then(res => res.json())
@@ -26,36 +55,43 @@
         var i = 0;
         for (let x in data) {
           var j = 0;
+
+          var templateCategory = document.createElement("div");
+          templateCategory.className = "template-category";
+          //templateCategory.setAttribute("onclick", toggleCategories(Object.keys(data)[i]))
+          templateCategory.innerHTML = Object.keys(data)[i].toUpperCase();
+          categories.appendChild(templateCategory);
+
           for (let y in data[x]){
+            var templateContainer = document.createElement("div");
+            templateContainer.className = "template " + Object.keys(data)[i];
               
-            var template = document.createElement("a");
-            template.innerHTML = data[x][y].name + "<br />";
-            template.href = "templates/" + Object.keys(data)[i] + "/" + Object.keys(data[x])[j];
+            var templateLink = document.createElement("a");
+            templateLink.innerHTML = data[x][y].name + "<br />";
+            templateLink.href = "templates/" + Object.keys(data)[i] + "/" + Object.keys(data[x])[j];
+            templateLink.target = "_blank";
 
             var templateImage = document.createElement("img");
-            /*
-            templateImage.src = "templates/" + Object.keys(data)[i] + "/" + 
-            data[Object.keys(data)[i]][Object.keys(data[x])[j]].name + "jpg";
-            */
             templateImage.src = data[x][y].image;
-            templateImage.style.width = "100px";
-            templateImage.style.height = "100px";
+            templateImage.style.width = "200px";
+            templateImage.style.height = "120px";
 
-            document.body.appendChild(template)
-            document.body.appendChild(templateImage)
+            templateContainer.appendChild(templateLink);
+            templateContainer.appendChild(templateImage);
+            container.appendChild(templateContainer);
+
+    
 
             console.log(Object.keys(data[x])[j])
-            console.log(template.href)
+            console.log(templateLink.href)
             j++;  
           }
           i++;
         }
         
+        var templates = document.getElementsByClassName("template");
+        var templateCategories = document.getElementsByClassName("template-category");
       })
-    
-      
-    
-   
   </script>
 </body>
 
