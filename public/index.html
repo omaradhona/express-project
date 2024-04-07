@@ -9,10 +9,6 @@
 </head>
 
 <style>
-  #categories{
-    
-  }
-
   .template-category{
     padding: 4px 8px;
     border-radius: 4px;
@@ -29,19 +25,28 @@
 
   .template img{
     border: 1px solid black;
+    width: 200px;
+    height: 120px;
   }
 
-  
+  .navbar-preview{
+    position: absolute;
+    top: inherit;
+    left: 2%;
+    display: none;
+  }
 </style>
 
 <body>
   <div id="categories" class="bg-dark text-white d-flex justify-content-center gap-3 p-3">
-
+    <div id="all-categories" class="template-category">ALL</div>
   </div>
 
   <div id="root" class="d-flex gap-3 text-center mt-2">
     
   </div>
+
+  
 
   <script>
     var categories = document.getElementById("categories")
@@ -73,25 +78,62 @@
 
             var templateImage = document.createElement("img");
             templateImage.src = data[x][y].image;
-            templateImage.style.width = "200px";
-            templateImage.style.height = "120px";
+            
+            
+            
 
             templateContainer.appendChild(templateLink);
             templateContainer.appendChild(templateImage);
+
+            if(templateContainer.matches(".navbars")){
+              let navbarPreview = document.createElement("img");
+              navbarPreview.className = "navbar-preview";
+              navbarPreview.src = data[x][y].preview;
+              navbarPreview.style.width = data[x][y].previewWidth;
+              navbarPreview.style.height = data[x][y].previewHeight;
+              templateContainer.appendChild(navbarPreview);
+              
+              
+              templateImage.addEventListener("mouseover", function(){
+                navbarPreview.style.display = "block";
+              })
+              templateImage.addEventListener("mouseout", function(){
+                navbarPreview.style.display = "none";
+              })
+              
+            }
+            
             container.appendChild(templateContainer);
 
-    
-
-            console.log(Object.keys(data[x])[j])
-            console.log(templateLink.href)
             j++;  
           }
+
+          let templates = document.getElementsByClassName("template");
+          let categoryClass = "." + Object.keys(data)[i];
+
+          templateCategory.addEventListener("click", function(){
+            for(let k = 0; k < templates.length; k++){
+              if(!templates[k].matches(categoryClass)){
+                templates[k].style.display = "none";
+              }
+              else{
+                templates[k].style.display = "block";
+              }
+            }
+          })
+
+          let showAllBtn = document.getElementById("all-categories");
+
+          showAllBtn.addEventListener("click", function(){
+            for(let l = 0; l < templates.length; l++){
+              templates[l].style.display = "block";
+            }
+          }) 
+
           i++;
         }
-        
-        var templates = document.getElementsByClassName("template");
-        var templateCategories = document.getElementsByClassName("template-category");
       })
+    
   </script>
 </body>
 

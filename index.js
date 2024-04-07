@@ -28,10 +28,11 @@ function populateJson(){
                 originalPath = path.resolve(folderPath, folder, htmlFile);
                 modifiedPath = "file:///" + originalPath.replaceAll("\\", "/")
                 fileName = path.basename(htmlFile, ".html");
-                templateImage = "templates/" + folder + "/" + fileName + ".jpg";
+                templateImagePath = "templates/" + folder + "/" + fileName + ".jpg";
+                navbarPreviewPath = "templates/" + folder + "/" + fileName + "-preview.jpg";
 
                 // "templates/" + category + template + "jpg"
-                run(modifiedPath, folder, htmlFile, fileName, templateImage)            
+                run(modifiedPath, folder, htmlFile, fileName, templateImagePath, navbarPreviewPath)      
             });
     })
 }
@@ -66,39 +67,64 @@ app.listen(4000, () => {
 //require('child_process').exec("start http://localhost:4000/");
 
 
-
-async function run(url, category, template, fileName, templateImage){
+async function run(url, category, template, fileName, templateImagePath, navbarPreviewPath){
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
     
     const html = await page.$eval('body', el => el.innerHTML);
     const css = await page.$eval('style', el => el.innerHTML);
-    const ele = await page.$("body");
+    const bodySection = await page.$("body");
+    
 
     if(category == "navbars"){
         await page.setViewport({ width: 580, height: 300 })
+        await bodySection.screenshot({ path: templateImagePath })
+
+        await page.setViewport({ width: 1280, height: 720 });
+
+        const navWidth = await page.$eval("nav", el => getComputedStyle(el).getPropertyValue("width"))
+        const navHeight = await page.$eval("nav", el => getComputedStyle(el).getPropertyValue("height"))
+
+
+        await page.setViewport({ 
+            width: parseInt(navWidth.slice(0, navWidth.length - 2)),
+            height: parseInt(navHeight.slice(0, navHeight.length - 2))
+        });
+    
+        await bodySection.screenshot({ path: navbarPreviewPath });
+
+        await browser.close();
+
+        data[category][template] = {
+            html: html,
+            css: css,
+            path: url,
+            name: fileName,
+            image: templateImagePath,
+            preview: navbarPreviewPath,
+            previewWidth: navWidth,
+            previewHeight: navHeight
+        }
     }
     else{
         await page.setViewport({ width: 1280, height: 720 });
+        await bodySection.screenshot({ path: templateImagePath })
+
+        await browser.close();
+
+        data[category][template] = {
+            html: html,
+            css: css,
+            path: url,
+            name: fileName,
+            image: templateImagePath
+        }
     }
     
-    await ele.screenshot({ path: templateImage })
-
-    await browser.close();
-
-    data[category][template] = {
-        html: html,
-        css: css,
-        path: url,
-        name: fileName,
-        image: templateImage
-    }
 
     fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
 }
-
-//run(modifiedPath, "wilunch");
 
 async function scr(){
     const browser = await puppeteer.launch();
