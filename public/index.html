@@ -108,10 +108,16 @@
             j++;  
           }
 
+          let templateCategories = document.getElementsByClassName("template-category")
           let templates = document.getElementsByClassName("template");
           let categoryClass = "." + Object.keys(data)[i];
 
-          templateCategory.addEventListener("click", function(){
+          templateCategory.addEventListener("click", function(e){
+            for(let m = 0; m < templateCategories.length; m++){
+              templateCategories[m].style.backgroundColor = "";
+              e.target.style.backgroundColor = "red";
+            }
+            
             for(let k = 0; k < templates.length; k++){
               if(!templates[k].matches(categoryClass)){
                 templates[k].style.display = "none";
@@ -124,7 +130,12 @@
 
           let showAllBtn = document.getElementById("all-categories");
 
-          showAllBtn.addEventListener("click", function(){
+          showAllBtn.addEventListener("click", function(e){
+            for(let n = 0; n < templateCategories.length; n++){
+              templateCategories[n].style.backgroundColor = "";
+              e.target.style.backgroundColor = "red";
+            }
+            
             for(let l = 0; l < templates.length; l++){
               templates[l].style.display = "block";
             }
